@@ -60,12 +60,12 @@ Ensure you have Python installed, then install the required libraries.
 This project relies on environment variables for security. You must create a .env file in the ROOT directory.
 Create a file named .env
 Paste the following template and fill in your real keys:
-Code Snippet:
+<br> <br> Code Snippet:
 
         MONGO_URI = "your_mongodb_connection_string"
         GEMINI_API_KEY = "your_google_gemini_api_key"
 
-
+(You are supposed to create a Gemini API key from Google AI Studio and create a cluster in MongoDB Atlas, then paste those two URLs here)
 
 ## 🗄️ Data & Utilities Setup (Run Once)
 Before running the app, you must populate the database and generate the city list for the frontend.
