@@ -1,9 +1,9 @@
-#🍽️ SmartDine - AI-Powered Food Discovery
+# 🍽️ SmartDine - AI-Powered Food Discovery
 SmartDine is a full-stack web application that helps users discover the best restaurants in their city using AI. It combines a MERN Stack (MongoDB, Express, React, Node.js) with a Python backend (Google Gemini API) to provide witty, context-aware restaurant recommendations.
 
 
 
-##🚀 Features
+## 🚀 Features
 **AI Recommendations**: Uses Google Gemini to generate unique, appetizing reasons for every restaurant choice.
 **City Autocomplete**: Intelligent dropdown to search for supported cities.
 **Smart Filtering**: Filter by specific cravings or use "Surprise Me" mode for random picks.
@@ -12,7 +12,7 @@ SmartDine is a full-stack web application that helps users discover the best res
 
 
 
-##🛠️ Tech Stack
+## 🛠️ Tech Stack
 **Frontend**: React.js, Vite, CSS3
 **Backend**: Node.js, Express.js
 **AI Engine**: Python, Google Gemini 1.5 Flash
@@ -20,7 +20,7 @@ SmartDine is a full-stack web application that helps users discover the best res
 
 
 
-##⚙️ Setup & Installation
+## ⚙️ Setup & Installation
 
 1. Clone the Repository
 
@@ -49,21 +49,21 @@ Ensure you have Python installed, then install the required libraries.
 
 
 
-##🔐 Environment Configuration (Crucial)
+## 🔐 Environment Configuration (Crucial)
 This project relies on environment variables for security. You must create a .env file in the ROOT directory.
 Create a file named .env
 Paste the following template and fill in your real keys:
 
 Code snippet:
-# Database Connection
+#Database Connection
 MONGO_URI=your_mongodb_connection_string
 
-# AI Service Configuration
+#AI Service Configuration
 GEMINI_API_KEY=your_google_gemini_api_key
 
 
 
-##🗄️ Data & Utilities Setup (Run Once)
+## 🗄️ Data & Utilities Setup (Run Once)
 Before running the app, you must populate the database and generate the city list for the frontend.
 
 1. Upload Restaurant Data to MongoDB Ensure restaurants.csv is in the root folder, then run:
@@ -76,7 +76,7 @@ Before running the app, you must populate the database and generate the city lis
     python get_cities.py
 
 
-##🏃‍♂️ Running the Application
+## 🏃‍♂️ Running the Application
 You need to run the Backend and Frontend in two separate terminals.
 
 Terminal 1: Start Backend (Server + AI)
@@ -96,7 +96,7 @@ The app will launch in your browser (usually http://localhost:5173).
 
 
 
-##📝 Usage Guide
+## 📝 Usage Guide
 **Sign Up**: Create a new account (Password must be 8+ chars with at least 1 special symbol).
 **Login**: Access the main dashboard.
 **Search**:
