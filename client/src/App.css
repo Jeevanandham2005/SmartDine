@@ -1,0 +1,364 @@
+/* =========================================
+   1. GLOBAL RESET & THEME
+   ========================================= */
+* { box-sizing: border-box; }
+
+:root {
+  --primary-red: #e23744;  
+  --text-white: #ffffff;
+  --text-dark: #333333;    
+  --card-bg: rgba(255, 255, 255, 0.95); 
+}
+
+html {
+  overflow-y: auto; /* Allow scroll only when needed */
+}
+
+html, body {
+  margin: 0; padding: 0; width: 100%; height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--primary-red); color: var(--text-white);
+  overflow-x: hidden;
+}
+
+#root { width: 100%; height: 100%; }
+
+.main-wrapper {
+  width: 100%; min-height: 100vh; position: relative;
+  display: flex; flex-direction: column;
+}
+
+/* =========================================
+   2. BACKGROUND ANIMATION
+   ========================================= */
+.falling-food-container {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.food-emoji {
+  position: absolute; top: -10vh; animation: fallDown linear infinite;
+  opacity: 0.4; font-size: 2rem;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+}
+@keyframes fallDown { 
+  0% { transform: translateY(-20vh) rotate(0deg); } 
+  100% { transform: translateY(120vh) rotate(360deg); } 
+}
+
+/* =========================================
+   3. AUTH PAGES (Login/Signup)
+   ========================================= */
+.auth-container {
+  width: 100%; min-height: 100vh;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; align-items: center;
+  position: relative; z-index: 10; gap: 30px; 
+}
+
+.auth-header { text-align: center; animation: slideDown 0.8s ease-out; }
+.auth-header h1 { font-size: 3.5rem; margin: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+.auth-header p { font-size: 1.2rem; opacity: 0.9; margin-top: 10px; }
+
+.auth-card {
+  background: var(--card-bg); color: var(--text-dark);
+  padding: 40px; border-radius: 16px; width: 90%; max-width: 400px;
+  text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.auth-card h2 { color: var(--primary-red); margin-top: 0; margin-bottom: 25px; }
+.auth-input { width: 100%; margin-bottom: 15px; padding: 15px; font-size: 16px; }
+.auth-btn { width: 100%; margin-top: 15px; padding: 15px; font-size: 18px; }
+.auth-link-text { margin-top: 25px; font-size: 1rem; color: #666; }
+.auth-link-text a { color: var(--primary-red); font-weight: bold; text-decoration: none; }
+
+/* =========================================
+   4. MAIN SEARCH LAYOUT
+   ========================================= */
+.container {
+  width: 100%; max-width: 1100px; margin: 0 auto; padding: 20px;
+  position: relative; z-index: 10;
+  display: flex; flex-direction: column; align-items: center; 
+  transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.page-enter-animation {
+  animation: pageSlideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0;
+}
+
+.centered-view { min-height: 100vh; justify-content: center; }
+
+.top-view { 
+  min-height: 100vh; 
+  justify-content: flex-start; 
+  padding-top: 80px; 
+  padding-bottom: 100px; 
+}
+
+.header { cursor: pointer; transition: transform 0.2s; margin-bottom: 40px; text-align: center; flex-shrink: 0; }
+.header:hover { transform: scale(1.02); }
+.header h1 { font-size: 3.5rem; margin: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+.header p { font-size: 1.2rem; opacity: 0.9; margin-top: 10px; }
+
+/* =========================================
+   5. SEARCH FORM COMPONENTS
+   ========================================= */
+.search-form {
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  width: 100%; max-width: 900px; margin-bottom: 50px; 
+  position: relative; z-index: 20; transition: transform 0.5s ease; flex-shrink: 0;
+}
+.centered-view .search-form { transform: scale(1.15); } 
+
+.input-row {
+  display: flex; gap: 15px; justify-content: center; align-items: center;
+  width: 100%; flex-wrap: wrap;
+}
+
+.input-field {
+  padding: 15px 20px; border: none; border-radius: 12px; font-size: 16px;
+  outline: none; background: white; 
+  color: var(--primary-red); font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.input-field::placeholder { 
+  color: var(--primary-red); opacity: 0.7; font-weight: normal; font-size: 16px; letter-spacing: 0.5px;
+}
+.main-search { flex-grow: 1; min-width: 300px; }
+
+.search-btn {
+  background-color: white; color: var(--primary-red); border: none;
+  padding: 15px 30px; border-radius: 12px; font-weight: bold; font-size: 16px;
+  cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s;
+}
+.search-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+.search-btn:disabled { background-color: #ddd; color: #888; cursor: not-allowed; }
+
+.surprise-btn {
+  background-color: white; color: var(--primary-red); border: none;
+  padding: 10px 25px; border-radius: 20px; font-size: 1rem; font-weight: bold;
+  cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+  display: flex; align-items: center; gap: 8px; transition: all 0.3s;
+}
+.surprise-btn:hover { transform: translateY(-2px); background-color: #fff0f1; }
+
+/* SETTINGS */
+.settings-wrapper { position: relative; z-index: 1001; }
+.settings-btn {
+  background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.4);
+  font-size: 1.5rem; padding: 10px; border-radius: 50%; cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+}
+.settings-btn:hover { background: rgba(255, 255, 255, 0.4); transform: rotate(90deg); }
+
+/* FIX 3: Force Dropdown on Top */
+.settings-popup {
+  position: absolute; top: 140%; right: 0; background: white; padding: 20px;
+  border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); width: 220px;
+  text-align: left; z-index: 9999; border: 2px solid var(--primary-red);
+  animation: slideUp 0.2s ease-out;
+}
+.settings-popup label { color: var(--primary-red); font-weight: bold; margin-bottom: 10px; display: block; font-size: 1rem; }
+.settings-select {
+  width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ffccd0;
+  color: var(--primary-red); font-weight: bold; background-color: #fff0f1; cursor: pointer; outline: none; font-size: 1rem;
+}
+
+/* =========================================
+   6. RESULTS GRID - FIXED for 2 Columns
+   ========================================= */
+.results-title {
+  color: white; font-size: 2rem; margin-bottom: 25px;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: slideUp 0.5s ease-out;
+  text-transform: capitalize; flex-shrink: 0;
+}
+.results-grid {
+  display: grid; 
+  /* FIX 4: Force 2 Columns by using 400px min-width */
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 30px; width: 100%; margin-top: 10px;
+}
+.restaurant-card {
+  background: var(--card-bg); color: var(--text-dark); border-radius: 20px;
+  padding: 30px; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+.restaurant-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+.card-header h3 { margin: 0; font-size: 1.6rem; color: #000; font-weight: 800; }
+.rating { background-color: #24963f; color: white; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; }
+.cuisine { color: #666; font-style: italic; margin-bottom: 12px; font-size: 1.1rem; }
+.address { color: #555; font-size: 1rem; margin-bottom: 10px; }
+.cost { font-weight: bold; color: var(--primary-red); margin-bottom: 20px; font-size: 1.1rem; }
+.ai-reason { background-color: #fff0f1; color: #555; padding: 20px; border-radius: 12px; margin-top: 15px; border-left: 5px solid var(--primary-red); font-style: italic; font-size: 1rem; line-height: 1.6; }
+
+/* ERROR & PAGINATION */
+.error-msg { background: white; color: var(--primary-red); padding: 20px 40px; border-radius: 12px; font-weight: bold; display: inline-block; margin-bottom: 40px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); animation: shake 0.5s ease-in-out; font-size: 1.2rem; }
+.pagination { margin-top: 60px; display: flex; justify-content: center; gap: 25px; padding-bottom: 80px; }
+.page-btn { background: white; color: var(--primary-red); border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: all 0.3s; font-size: 1.1rem; }
+.page-btn:hover:not(:disabled) { transform: translateY(-3px); background-color: #fffbfc; }
+.page-info { font-weight: bold; font-size: 1.4rem; align-self: center; }
+.hidden { visibility: hidden; pointer-events: none; }
+
+/* =========================================
+   7. ORANGE JUICE LOADER
+   ========================================= */
+.loader-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(226, 55, 68, 0.4); backdrop-filter: blur(5px);
+  display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;
+}
+.glass-wrapper { position: relative; width: 140px; height: 200px; display: flex; justify-content: center; align-items: flex-end; }
+.glass {
+  width: 80px; height: 140px; background: rgba(255, 255, 255, 0.15);
+  border-left: 3px solid rgba(255,255,255,0.7); border-right: 3px solid rgba(255,255,255,0.7);
+  border-bottom: 6px solid rgba(255,255,255,0.9); border-radius: 0 0 30px 30px;
+  position: relative; overflow: hidden; clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2); z-index: 2;
+}
+.juice {
+  position: absolute; bottom: 0; left: 0; width: 100%; height: 0%;
+  background: linear-gradient(to right, #ff9a00, #ffba42); 
+  animation: fillGlass 2.5s infinite ease-in-out; border-top: 3px solid rgba(255,255,255,0.4);
+}
+.straw {
+  position: absolute; bottom: 5px; right: 40px; width: 10px; height: 180px;
+  background: repeating-linear-gradient(90deg, #ffd700, #ffd700 4px, #e6ac00 4px, #e6ac00 8px);
+  transform: rotate(15deg); z-index: 1; border-radius: 5px;
+}
+.orange-slice {
+  position: absolute; bottom: 110px; right: 5px; width: 50px; height: 50px;
+  background: #ff8c00; border: 3px solid #fff; border-radius: 50%;
+  background-image: radial-gradient(circle, #fff 3px, transparent 4px), repeating-conic-gradient(#ff8c00 0deg 15deg, #fff 15deg 18deg);
+  z-index: 5; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.ice-cubes span {
+  position: absolute; width: 15px; height: 15px; background: rgba(255, 255, 255, 0.4);
+  border: 1px solid white; border-radius: 4px; bottom: -25px; animation: floatIce 2.5s infinite ease-in-out;
+}
+.ice-cubes span:nth-child(1) { left: 15px; animation-delay: 0.1s; } .ice-cubes span:nth-child(2) { right: 15px; animation-delay: 0.2s; }
+.loader-text {
+  margin-top: 25px; color: white; font-weight: bold; font-size: 1.6rem;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: pulse 1s infinite;
+}
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes pageSlideUp { 0% { opacity: 0; transform: translateY(50px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fillGlass { 0% { height: 0%; } 50% { height: 85%; } 60% { height: 85%; } 100% { height: 0%; } }
+@keyframes floatIce { 0% { bottom: 0px; opacity: 0; transform: rotate(0deg); } 10% { opacity: 1; } 50% { bottom: 100px; transform: rotate(20deg); } 60% { bottom: 100px; transform: rotate(25deg); } 100% { bottom: 0px; opacity: 0; transform: rotate(0deg); } }
+@keyframes pulse { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+@keyframes shake { 0% { transform: translateX(0); } 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 100% { transform: translateX(0); } }
+
+/* =========================================
+   8. CUSTOM SCROLLBAR (THE FIX)
+   ========================================= */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--primary-red); /* Hides track by matching background */
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3); /* Thin white bar */
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* =========================================
+   9. CITY DROPDOWN (Fixed Positioning)
+   ========================================= */
+
+/* 1. The Anchor: This holds the input and list together */
+.city-search-wrapper {
+  position: relative;
+  display: flex;
+  width: 250px;     /* Fixed width: wide enough for "Thiruvananthapuram" but compact */
+  flex-shrink: 0;   /* Prevents it from getting squished too small */
+}
+
+/* 2. The Floating List */
+.city-dropdown-list {
+  position: absolute; /* Crucial: Floats ON TOP so it doesn't push buttons */
+  top: 100%;          /* Moves it exactly below the input */
+  left: 0;
+  width: 100%;
+  background: white;  /* White background as requested */
+  
+  /* Styling to remove bullet points */
+  list-style: none;   
+  margin: 5px 0 0 0;
+  padding: 0;
+  
+  /* Borders and Shadow */
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  border: 2px solid var(--primary-red);
+  z-index: 1000;      /* Ensures it sits on top of the falling food */
+
+  /* SCROLLING MAGIC */
+  max-height: 200px;  /* Only shows about 4-5 items */
+  overflow-y: auto;   /* Adds scrollbar if list is long */
+}
+
+/* 3. List Items */
+.city-dropdown-list li {
+  padding: 12px 20px;
+  color: var(--primary-red); /* Red text as requested */
+  font-weight: bold;
+  cursor: pointer;
+  border-bottom: 1px solid #ffe5e7;
+  text-align: left;
+}
+
+.city-dropdown-list li:hover {
+  background-color: #fff0f1; /* Light pink hover effect */
+}
+
+/* 4. Custom Scrollbar for the list */
+.city-dropdown-list::-webkit-scrollbar {
+  width: 8px;
+}
+.city-dropdown-list::-webkit-scrollbar-thumb {
+  background: var(--primary-red);
+  border-radius: 4px;
+}
+
+/* =========================================
+   10. PASSWORD EYE BUTTON
+   ========================================= */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px; /* Matches your original input spacing */
+}
+
+/* Remove bottom margin from the input itself so the wrapper handles it */
+.password-wrapper .auth-input {
+  margin-bottom: 0; 
+  padding-right: 45px; /* Make space for the eye icon so text doesn't overlap */
+}
+
+.eye-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%); /* Centers vertically */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  padding: 0;
+}
+
+.eye-btn:hover {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+}
