@@ -11,6 +11,7 @@ load_dotenv()
 
 # Configure API
 try:
+    # KEEPING YOUR MODEL VERSION
     MODEL_NAME = 'gemini-2.5-flash'
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 except Exception as e:
@@ -67,7 +68,7 @@ def get_recommendation(user_query, user_city, limit=3, page=1):
         candidates = [random_choice]
         limit = 1
 
-# --- STEP 4: AI REASONING ---
+    # --- STEP 4: AI REASONING ---
     prompt = f"""
     You are a witty and knowledgeable local food critic for {user_city}.
     
@@ -75,9 +76,9 @@ def get_recommendation(user_query, user_city, limit=3, page=1):
     CANDIDATE RESTAURANTS: {json.dumps(candidates)}
 
     STRICT INSTRUCTIONS FOR THE 'reason' FIELD:
-    1. PROHIBITED: Do NOT simply repeat the user's query. (e.g., If user asks for "Comfort food", do NOT say "Good for comfort food".)
+    1. PROHIBITED: Do NOT simply repeat the user's query.
     2. REQUIRED: Mention specific details from the restaurant's Cuisine or Rating.
-    3. STYLE: Be appetizing and specific. Instead of "Good place", say "Known for their authentic flavors and high rating."
+    3. STYLE: Be appetizing and specific.
     4. If the User Request is empty or generic, highlight the restaurant's best feature.
     5. Keep it under 25 words.
 
@@ -89,7 +90,7 @@ def get_recommendation(user_query, user_city, limit=3, page=1):
             "cuisine": "Italian, Pizza",
             "cost": "1200",
             "address": "Full Address",
-            "reason": "Famous for their wood-fired pizzas that melt in your mouth; a top-rated choice for Italian lovers."
+            "reason": "Famous for their wood-fired pizzas; a top-rated choice for Italian lovers."
         }}
     ]
     """
@@ -98,20 +99,32 @@ def get_recommendation(user_query, user_city, limit=3, page=1):
         model = genai.GenerativeModel(MODEL_NAME)
         response = model.generate_content(prompt, generation_config={"temperature": 0.3})
         
-        clean_text = response.text.replace("```json", "").replace("```", "").strip()
-        parsed_data = json.loads(clean_text)
+        # --- NEW ROBUST PARSING LOGIC (THE FIX) ---
+        raw_text = response.text
         
-        if isinstance(parsed_data, list) and len(parsed_data) > 0 and "error" not in parsed_data[0]:
-            return json.dumps(parsed_data[:limit])
+        # This ignores "Here is the JSON:" and "Hope this helps!"
+        # It finds the first '[' and the last ']' to extract ONLY the list.
+        start_index = raw_text.find('[')
+        end_index = raw_text.rfind(']')
+        
+        if start_index != -1 and end_index != -1:
+            clean_text = raw_text[start_index : end_index + 1]
+            parsed_data = json.loads(clean_text)
             
-        return clean_text
+            if isinstance(parsed_data, list) and len(parsed_data) > 0:
+                return json.dumps(parsed_data[:limit])
+        
+        # Debugging: If it fails, print what the AI actually said to the terminal
+        print(f"⚠️ AI FORMAT FAIL. RAW RESPONSE: {raw_text}")
+        return json.dumps([{"error": "AI response error. Please try again."}])
 
     except Exception as e:
         error_str = str(e)
-        # --- QUOTA ERROR HANDLING ---
         if "429" in error_str or "quota" in error_str.lower():
-            return json.dumps([{"error": "⚠️ Traffic is high (Google API Quota). Please wait 30 seconds and try again!"}])
+            return json.dumps([{"error": "⚠️ Traffic is high. Please wait 30 seconds."}])
         
+        # Print error to terminal so you can see it
+        print(f"🔥 SERVER ERROR: {error_str}")
         return json.dumps([{"error": "AI formatting error. Please try again."}])
 
 if __name__ == '__main__':
