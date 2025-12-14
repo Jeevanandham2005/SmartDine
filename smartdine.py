@@ -12,7 +12,7 @@ load_dotenv()
 # Configure API
 try:
     # KEEPING YOUR MODEL VERSION
-    MODEL_NAME = 'gemini-2.5-flash'
+    MODEL_NAME = 'gemini-2.5-flash-lite'
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 except Exception as e:
     pass 
