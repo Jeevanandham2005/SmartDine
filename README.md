@@ -21,7 +21,7 @@ SmartDine is a full-stack web application that helps users discover the best res
 
 - **Backend**: Node.js, Express.js
 
-- **AI Engine**: Python, Google Gemini 1.5 Flash
+- **AI Engine**: Python, Google Gemini 2.5 Flash
 
 - **Database**: MongoDB Atlas (or Local MongoDB)
 
