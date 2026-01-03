@@ -1,0 +1,7 @@
+pymongo
+google-generativeai
+python-dotenv
+pandas
+certifi
+flask
+flask-cors

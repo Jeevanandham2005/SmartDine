@@ -95,7 +95,10 @@ function App() {
     setLoading(true); setHasSearched(true); setError(''); setShowSettings(false);
 
     try {
-      const res = await fetch('http://localhost:5000/api/recommend', {
+      // 1. Define the API URL (Cloud OR Local)
+      const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+      const res = await fetch(`${API_BASE}/api/recommend`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: activeQuery, city, count: apiLimit, page: targetPage }),
