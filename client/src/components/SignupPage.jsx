@@ -48,16 +48,8 @@ function SignupPage() {
         }
 
         try {
-            // --- THE SMART SWITCH FIX IS HERE ---
-            // If the browser says we are on "localhost", use port 5000.
-            // Otherwise (Netlify), use your Render backend.
-            const API_BASE = window.location.hostname === 'localhost' 
-                ? 'http://localhost:5000' 
-                : 'https://smartdine-api.onrender.com';
-
-            console.log("Connecting to:", API_BASE); // This helps you see where it's going!
-
-            const response = await fetch(`${API_BASE}/api/signup`, { // <--- Uses backticks ` `
+            // --- LOCALHOST FETCH ---
+            const response = await fetch('http://localhost:5000/api/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -74,7 +66,7 @@ function SignupPage() {
             }
         } catch (e) { 
             console.error("Fetch Error:", e);
-            setError('Could not connect to the server.'); 
+            setError('Could not connect to the server (Is "node server.js" running?).'); 
         }
     };
 

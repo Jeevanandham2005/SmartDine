@@ -23,15 +23,8 @@ function LoginPage() {
         e.preventDefault();
         setError('');
         try {
-            // --- THE SMART SWITCH FIX IS HERE ---
-            const API_BASE = window.location.hostname === 'localhost' 
-                ? 'http://localhost:5000' 
-                : 'https://smartdine-api.onrender.com';
-
-            console.log("Login connecting to:", API_BASE); 
-
-            // NOTICE: I replaced the hardcoded string with `${API_BASE}/api/login`
-            const response = await fetch(`${API_BASE}/api/login`, {
+            // --- LOCALHOST FETCH ---
+            const response = await fetch('http://localhost:5000/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
@@ -46,7 +39,7 @@ function LoginPage() {
             }
         } catch (e) {
             console.error("Login Error:", e);
-            setError('Could not connect to the server.');
+            setError('Could not connect to the server (Is "node server.js" running?).');
         }
     };
 

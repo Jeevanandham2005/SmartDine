@@ -1,7 +1,7 @@
 import React, { useState, useMemo, memo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackgroundFood from './components/BackgroundFood'; 
-import cityList from './cities.json'; // IMPORT THE CITIES
+import cityList from './cities.json'; 
 import './App.css';
 
 // --- JUICE LOADER ---
@@ -72,7 +72,6 @@ function App() {
     setShowCityDropdown(false);
   };
 
-  // Close dropdown if clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (cityInputRef.current && !cityInputRef.current.contains(event.target)) {
@@ -86,8 +85,6 @@ function App() {
   const fetchRestaurants = async (targetPage, resetList = false, overrideCount = null, overrideQuery = null) => {
     const activeCount = overrideCount || count;
     const activeQuery = overrideQuery || query;
-
-    // Use "ALL" logic: if count is ALL, request 10 from API
     const apiLimit = activeCount === 'ALL' ? 10 : activeCount;
 
     if (!city.trim()) { setError("Please enter a City to start!"); return; }
@@ -95,7 +92,6 @@ function App() {
     setLoading(true); setHasSearched(true); setError(''); setShowSettings(false);
 
     try {
-      // 1. Define the API URL (Cloud OR Local)
       const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
       const res = await fetch(`${API_BASE}/api/recommend`, {
@@ -112,7 +108,11 @@ function App() {
         } else {
            setRestaurants(parsedData); setPage(targetPage);
            
-           if (activeQuery === "__SURPRISE__MODE__") { 
+           // --- TITLE LOGIC FIXED HERE ---
+           if (parsedData.length > 0 && parsedData[0].name === "⚠️ Food Only") {
+               // If it's a warning, show a neutral title
+               setResultTitle("System Notification");
+           } else if (activeQuery === "__SURPRISE__MODE__") { 
                setResultTitle(`🎲 Surprise Pick in ${city}`); 
            } else if (activeCount === 'ALL') { 
                setResultTitle(`Exploring Restaurants in ${city}`); 
@@ -166,29 +166,26 @@ function App() {
         <form className="search-form" onSubmit={handleSearch}>
           <div className="input-row">
             
-            {/* --- CITY AUTOCOMPLETE --- */}
-{/* 1. Wrapper updated to match CSS: "city-search-wrapper" */}
-<div className="city-search-wrapper" ref={cityInputRef}>
-    <input 
-      type="text" 
-      placeholder="City (Required)" 
-      value={city} 
-      onChange={handleCityChange} 
-      onFocus={() => city.length > 0 && setShowCityDropdown(true)}
-      className="input-field" 
-      required 
-      style={{ width: '100%' }} /* Added width 100% so it fills the wrapper */
-    />
-    
-    {/* 2. Dropdown updated to match CSS: "city-dropdown-list" */}
-    {showCityDropdown && filteredCities.length > 0 && (
-      <ul className="city-dropdown-list">
-        {filteredCities.map((c, index) => (
-          <li key={index} onClick={() => selectCity(c)}>{c}</li>
-        ))}
-      </ul>
-    )}
-</div>
+            <div className="city-search-wrapper" ref={cityInputRef}>
+                <input 
+                  type="text" 
+                  placeholder="City (Required)" 
+                  value={city} 
+                  onChange={handleCityChange} 
+                  onFocus={() => city.length > 0 && setShowCityDropdown(true)}
+                  className="input-field" 
+                  required 
+                  style={{ width: '100%' }}
+                />
+                
+                {showCityDropdown && filteredCities.length > 0 && (
+                  <ul className="city-dropdown-list">
+                    {filteredCities.map((c, index) => (
+                      <li key={index} onClick={() => selectCity(c)}>{c}</li>
+                    ))}
+                  </ul>
+                )}
+            </div>
 
             <input type="text" placeholder="Any specific craving? (or leave empty)" value={query} onChange={(e) => setQuery(e.target.value)} className="input-field main-search" />
             <button type="submit" disabled={loading} className="search-btn">Find Food</button>
@@ -213,13 +210,40 @@ function App() {
         {restaurants.length > 0 && !error && (<h2 className="results-title">{resultTitle}</h2>)}
 
         <div className="results-grid">
-          {restaurants.map((place, index) => (
-            <div key={index} className="restaurant-card" style={{ animationDelay: `${index * 0.1}s` }}>
-              <div className="card-header"><h3>{place.name}</h3><span className="rating">⭐ {place.rating}</span></div>
-              <p className="cuisine">{place.cuisine}</p><p className="address">📍 {place.address}</p><p className="cost">💰 {place.cost} for two</p>
-              <div className="ai-reason">"{place.reason}"</div>
-            </div>
-          ))}
+          {restaurants.map((place, index) => {
+            
+            // --- WARNING CARD LOGIC ---
+            if (place.name === "⚠️ Food Only") {
+              return (
+                <div key={index} style={{
+                    gridColumn: "1 / -1",
+                    backgroundColor: "#fff5f5",
+                    border: "2px solid #fc8181",
+                    borderRadius: "15px",
+                    padding: "25px",
+                    textAlign: "center",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
+                    marginTop: "20px"
+                }}>
+                  <h3 style={{ color: "#c53030", fontSize: "1.5rem", marginBottom: "10px" }}>
+                     🚫 I can only talk about Food!
+                  </h3>
+                  <p style={{ color: "#2d3748", fontSize: "1.1rem" }}>
+                    {place.reason}
+                  </p>
+                </div>
+              );
+            }
+
+            // --- NORMAL CARD LOGIC ---
+            return (
+              <div key={index} className="restaurant-card" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="card-header"><h3>{place.name}</h3><span className="rating">⭐ {place.rating}</span></div>
+                <p className="cuisine">{place.cuisine}</p><p className="address">📍 {place.address}</p><p className="cost">💰 {place.cost} for two</p>
+                <div className="ai-reason">"{place.reason}"</div>
+              </div>
+            );
+          })}
         </div>
 
         {restaurants.length > 0 && !error && count === 'ALL' && (

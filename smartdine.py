@@ -69,18 +69,22 @@ def get_recommendation(user_query, user_city, limit=3, page=1):
         limit = 1
 
     # --- STEP 4: AI REASONING ---
+# --- STEP 4: AI REASONING (UPDATED WITH GUARDRAILS) ---
     prompt = f"""
     You are a witty and knowledgeable local food critic for {user_city}.
     
     USER REQUEST: "{user_query}"
     CANDIDATE RESTAURANTS: {json.dumps(candidates)}
 
-    STRICT INSTRUCTIONS FOR THE 'reason' FIELD:
-    1. PROHIBITED: Do NOT simply repeat the user's query.
-    2. REQUIRED: Mention specific details from the restaurant's Cuisine or Rating.
-    3. STYLE: Be appetizing and specific.
-    4. If the User Request is empty or generic, highlight the restaurant's best feature.
-    5. Keep it under 25 words.
+    STRICT INSTRUCTIONS:
+    1. **SAFETY CHECK (CRITICAL):**
+       - If the USER REQUEST is NOT related to food, dining, restaurants, hunger, or cravings (e.g., questions about politics, science, coding, general knowledge), YOU MUST REFUSE.
+       - In this case, return a single JSON object with the name "⚠️ Food Only", the cuisine "System", and the reason: "I am a dedicated food critic. I cannot answer questions about {user_query}."
+
+    2. **NORMAL MODE (If food related):**
+       - Pick the best matching restaurants from the candidates.
+       - Write a short, appetizing 'reason' (max 25 words).
+       - Do not simply repeat the user's query.
 
     OUTPUT FORMAT (JSON ARRAY ONLY):
     [
