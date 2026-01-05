@@ -9,7 +9,7 @@ const { spawn } = require('child_process');
 const app = express();
 const client = new MongoClient(process.env.MONGO_URI);
 const dbName = 'SmartDineDB'; 
-const jwtSecret = 'YOUR_SECRET_KEY'; 
+const jwtSecret = 'Chris123'; 
 
 async function connectDb() {
     try { await client.connect(); console.log("✅ Auth DB Connected!"); } 
@@ -17,6 +17,7 @@ async function connectDb() {
 }
 connectDb();
 
+// 1. ALLOW ALL REQUESTS (Fixes CORS issues)
 app.use(cors());
 app.use(express.json());
 
@@ -44,15 +45,23 @@ app.post('/api/login', async (req, res) => {
 // RECOMMENDATION ROUTE
 app.post('/api/recommend', (req, res) => {
     const { query, city, count = 3, page = 1 } = req.body;
-    const pythonProcess = spawn('python', ['smartdine.py', query || "", city || "", count, page]);
+    
+    // 2. USE 'python3' (Safer for Linux/Render servers)
+    const pythonProcess = spawn('python3', ['smartdine.py', query || "", city || "", count, page]);
     
     let result = '';
     pythonProcess.stdout.on('data', (data) => { result += data.toString(); });
+    
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`Python Error: ${data}`); // Log errors if Python crashes
+    });
+
     pythonProcess.on('close', (code) => {
         if (code === 0) res.json({ answer: result });
         else res.json({ answer: JSON.stringify([{ "error": "Server Error. Check logs." }]) });
     });
 });
 
-const PORT = 5000;
+// 3. THE CRITICAL FIX: USE PROCESS.ENV.PORT
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Gateway running on ${PORT}`));

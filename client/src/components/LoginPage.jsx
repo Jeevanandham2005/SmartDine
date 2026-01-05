@@ -23,12 +23,20 @@ function LoginPage() {
         e.preventDefault();
         setError('');
         try {
-            const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-            const response = await fetch('http://localhost:5000/api/login', {
+            // --- THE SMART SWITCH FIX IS HERE ---
+            const API_BASE = window.location.hostname === 'localhost' 
+                ? 'http://localhost:5000' 
+                : 'https://smartdine-api.onrender.com';
+
+            console.log("Login connecting to:", API_BASE); 
+
+            // NOTICE: I replaced the hardcoded string with `${API_BASE}/api/login`
+            const response = await fetch(`${API_BASE}/api/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
             });
+            
             const data = await response.json();
             if (response.ok) {
                 localStorage.setItem('token', data.token); 
@@ -37,6 +45,7 @@ function LoginPage() {
                 setError(data.message || 'Login failed.');
             }
         } catch (e) {
+            console.error("Login Error:", e);
             setError('Could not connect to the server.');
         }
     };

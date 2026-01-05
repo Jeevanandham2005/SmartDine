@@ -48,8 +48,16 @@ function SignupPage() {
         }
 
         try {
-            const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-            const response = await fetch('http://localhost:5000/api/signup', {
+            // --- THE SMART SWITCH FIX IS HERE ---
+            // If the browser says we are on "localhost", use port 5000.
+            // Otherwise (Netlify), use your Render backend.
+            const API_BASE = window.location.hostname === 'localhost' 
+                ? 'http://localhost:5000' 
+                : 'https://smartdine-api.onrender.com';
+
+            console.log("Connecting to:", API_BASE); // This helps you see where it's going!
+
+            const response = await fetch(`${API_BASE}/api/signup`, { // <--- Uses backticks ` `
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -57,6 +65,7 @@ function SignupPage() {
                     password: formData.password 
                 }),
             });
+
             const data = await response.json();
             if (response.ok) {
                 navigate('/login'); 
@@ -64,6 +73,7 @@ function SignupPage() {
                 setError(data.message || 'Registration failed.'); 
             }
         } catch (e) { 
+            console.error("Fetch Error:", e);
             setError('Could not connect to the server.'); 
         }
     };
